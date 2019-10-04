@@ -42,7 +42,7 @@ The main challenge will be getting a sample size that is large enough given limi
 ###Links
 
 Project repository: https://github.com/psych251/kouchaki2018.git
-Original paper: 
+Original paper: https://github.com/psych251/kouchaki2018/blob/master/original_paper.pdf
 
 ##Methods
 
