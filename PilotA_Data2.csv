@@ -1,0 +1,48 @@
+StartDate,EndDate,Status,IPAddress,Progress,Duration (in seconds),Finished,RecordedDate,ResponseId,RecipientLastName,RecipientFirstName,RecipientEmail,ExternalReference,LocationLatitude,LocationLongitude,DistributionChannel,UserLanguage,PromptEthical,PromptUnethical,PromptTypical,AttCheckSit,SelfDH1,SelfDH2,SelfDH3,SelfDH4,SelfDH5,SelfDH6,SelfDH7,SelfDH8,SelfDH9,SelfDH10,SelfDHCheck,DemoAge,DemoGen,DemoLang,mTurkCode
+Start Date,End Date,Response Type,IP Address,Progress,Duration (in seconds),Finished,Recorded Date,Response ID,Recipient Last Name,Recipient First Name,Recipient Email,External Data Reference,Location Latitude,Location Longitude,Distribution Channel,User Language,"Please describe below one time you behaved ethically by being honest and telling the truth about something. Please write about an event occurring in the past six months. Other people engaging in this type of introspective task frequently write about instances where they were truthful even when they had the opportunity to be dishonest or to cheat.
+
+
+Describe the situation and any thoughts, feelings you remember from the experience in the past six months.  
+
+ 
+
+Please provide as many details as possible so that a person reading your entry would understand the situation and how you felt.","Please describe below one
+time you behaved unethically by being dishonest and lying about something.
+Please write about an event occurring in the past six months. Other people
+engaging in this type of introspective task frequently write about instances
+where they lied even when they had the opportunity to be honest and truthful.
+ 
+
+Describe the situation and any thoughts, feelings you remember from the
+experience in the past six months.  
+
+ 
+
+Please provide as many
+details as possible so that a person reading your entry would understand the
+situation and how you felt.","Please think of how you spend
+your evenings and describe below a typical instance from the past six months.
+Other people engaging in this type of introspective task frequently write about
+instances where they make dinner, watch TV, read a book, or spend time with
+friends.
+
+
+Describe the situation and
+any thoughts, feelings you remember from the experience.  
+
+ 
+
+Please provide as many
+details as possible so that a person reading your entry would understand the
+situation and how you felt.",What type of event/situation did you write about?,How capable are you of exercising self-control?,How capable are you of acting intentionally?,How capable are you of remembering things well?,How capable are you of making plans?,How capable are you of doing things on purpose?,How capable are you of feeling pain?,How capable are you of feeling pleasure?,How capable are you of experiencing emotion?,How capable are you of having desires?,How capable are you of experiencing feelings?,"To validate this data, please select ""3"" for this item.",How old are you?,What is your gender?,Are you a native English speaker?,mTurkCode
+"{""ImportId"":""startDate"",""timeZone"":""America/Denver""}","{""ImportId"":""endDate"",""timeZone"":""America/Denver""}","{""ImportId"":""status""}","{""ImportId"":""ipAddress""}","{""ImportId"":""progress""}","{""ImportId"":""duration""}","{""ImportId"":""finished""}","{""ImportId"":""recordedDate"",""timeZone"":""America/Denver""}","{""ImportId"":""_recordId""}","{""ImportId"":""recipientLastName""}","{""ImportId"":""recipientFirstName""}","{""ImportId"":""recipientEmail""}","{""ImportId"":""externalDataReference""}","{""ImportId"":""locationLatitude""}","{""ImportId"":""locationLongitude""}","{""ImportId"":""distributionChannel""}","{""ImportId"":""userLanguage""}","{""ImportId"":""QID16_TEXT""}","{""ImportId"":""QID17_TEXT""}","{""ImportId"":""QID18_TEXT""}","{""ImportId"":""QID4""}","{""ImportId"":""QID5""}","{""ImportId"":""QID6""}","{""ImportId"":""QID7""}","{""ImportId"":""QID8""}","{""ImportId"":""QID9""}","{""ImportId"":""QID10""}","{""ImportId"":""QID11""}","{""ImportId"":""QID12""}","{""ImportId"":""QID13""}","{""ImportId"":""QID14""}","{""ImportId"":""QID15""}","{""ImportId"":""QID1_TEXT""}","{""ImportId"":""QID2""}","{""ImportId"":""QID3""}","{""ImportId"":""mTurkCode""}"
+2019-10-18 15:19:15,2019-10-18 15:20:10,1,,100,55,1,2019-10-18 15:20:11,R_2wTvVCUK7Je2vfg,,,,,37.423004150390625,-122.1638946533203125,preview,EN,,,,3,5,5,5,6,4,3,3,4,3,4,4,345,2,1,673948
+2019-10-18 15:44:26,2019-10-18 15:45:29,1,,100,62,1,2019-10-18 15:45:29,R_sdjOuZ8KY7PwgEx,,,,,37.423004150390625,-122.1638946533203125,preview,EN,,,,2,5,5,4,7,4,6,6,3,6,6,4,2345,1,2,6698984
+2019-10-23 18:25:34,2019-10-23 18:26:51,0,104.132.1.96,100,76,1,2019-10-23 18:26:51,R_1Kx5pDpZmCuoyxn,,,,,37.3860931396484375,-122.08390045166015625,anonymous,EN,,"I told my 3 year old cousin Santa existed ",,2,7,7,7,7,7,7,7,7,7,7,3,69,1,1,5862206
+2019-10-23 23:00:10,2019-10-23 23:15:03,0,73.241.157.158,100,893,1,2019-10-23 23:15:04,R_8wha862DDZPBKBb,,,,,37.4651031494140625,-122.14300537109375,anonymous,EN,,,"Come home from work and start to make dinner, whether in a hurry due to hunger or slowly out of laziness. Watch a sports game while cooking to unwind and enjoy myself. Sit down and eat either watching sports or talking with friends/significant other, talking about our days. Finish dinner and wash and dry dishes, start thinking about what I need to get ready for the next day, while also trying to enjoy the night and time away from work. Read/talk the rest of the night while getting clothes ready for the next day, cleaning, doing other chores until I read in bed before I sleep",3,6,6,7,7,6,6,5,6,7,6,3,24,1,1,9294840
+2019-10-23 23:07:30,2019-10-23 23:15:43,0,67.188.32.111,100,493,1,2019-10-23 23:15:43,R_YQ63hHhNn3WzJWV,,,,,37.770294189453125,-122.440704345703125,anonymous,EN,"While boarding the bus a few weeks ago, I noticed the pass scanner was not working. No one monitors this machine, and I could have continued on with my day without paying the fare. Instead, I decided to approach the bus driver and let him know the machine was broken and I was unable to pay fare. He told me not to worry about paying. 
+
+Looking back on the experience, I’m not sure whether I approached the bus driver because it was the ethical thing to do, or if I was worried that others would see I had not paid. ",,,1,5,5,5,7,4,5,6,6,5,6,3,24,1,1,4643046
+2019-10-24 11:18:57,2019-10-24 11:22:18,0,171.66.12.118,100,201,1,2019-10-24 11:22:19,R_Z3FonKREyGsM9Ed,,,,,37.423004150390625,-122.1638946533203125,anonymous,EN,,"This is where I would write about a time I did something dishonest in the past six months. Let's say I lied to a friend because I didn't want to eat dinner with them, so I told them I already had plans. In reality, I didn't really feel like spending time with the friend. I thought it would be nicer to tell them that I had plans than that I just didn't want to see them, so that's what I did. I remember feeling a little bad and guilty about it afterwards. ",,2,5,6,5,7,6,7,6,7,6,7,3,24,1,1,9998922
+2019-10-24 11:22:48,2019-10-24 11:24:12,0,171.66.12.118,100,83,1,2019-10-24 11:24:12,R_3hllyjnLHPGlyIe,,,,,37.423004150390625,-122.1638946533203125,anonymous,EN,,"This is going to be my sample response that I hope gets excluded, so I'll try a couple of different ways to exclude the response. Rather than actually write about an unethical memory here, I'll just leave this filler text. ",,1,6,6,7,5,5,5,5,5,5,6,6,33,2,1,3911272
+2019-10-24 15:17:47,2019-10-24 15:19:03,0,171.66.12.246,100,76,1,2019-10-24 15:19:04,R_3foWRLDkHvEUDVs,,,,,37.423004150390625,-122.1638946533203125,anonymous,EN,,,This is going to be another sample one that just misses the attention check question on the SelfDH scale so I can see if that part of the exclusion code works.,3,6,6,7,7,6,6,5,5,6,4,5,43,1,1,2573144

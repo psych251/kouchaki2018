@@ -1,0 +1,87 @@
+---
+title: "PilotA_Practice"
+output: html_document
+---
+
+This is my Pilot A practice document, where I'll try to figure out the actual code that I'll use to analyze my data. 
+
+```{r}
+#Step one is to load libraries
+library(tidyverse)
+library(ggthemes)
+```
+```{r}
+#Next step is to import the data and make sure it looks ok
+setwd("/Users/nickysullivan/Desktop/Psych_251/kouchaki2018")
+PilotA_Data <- read.csv("PilotA_Data3.csv")
+head(PilotA_Data)
+```
+```{r}
+#Next let's filter out all the columns that we won't be using
+PilotA_Data_fil <- PilotA_Data %>%
+  select(Finished, PromptEthical:DemoLang)
+```
+
+```{r}
+#Next we want to try and make a new column for condition that tells us what prompt the participant got
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  mutate(Condition = case_when(
+    grepl("a|e|i|o|u|y", PromptEthical) ~ 1,
+    grepl("a|e|i|o|u|y", PromptUnethical) ~ 2, 
+    grepl("a|e|i|o|u|y", PromptTypical) ~ 3
+  ))
+```
+
+```{r}
+#Now we want to start excluding people. The first step we can actually exclude two of the three groups- those who didn't write anything and those who failed to answer the check where they reported what condition they were in. All we need to do is compare the Condition column to the check column, and if they're not the same exclude them
+PilotA_Data_fil <- PilotA_Data_fil %>% #This gets rid of rows we don't need
+  filter(Finished == 1)
+PilotA_Data_fil$Condition <- as.numeric(PilotA_Data_fil$Condition) #This converts the Condition column to numbers
+PilotA_Data_fil$AttCheckSit <-as.numeric(PilotA_Data_fil$AttCheckSit) #This converst the Att Check column to numbers
+PilotA_Data_fil <- PilotA_Data_fil %>% 
+  mutate(AttCheckSit = AttCheckSit-1) #This corrects for the fact that when you convert the Att Check column to numbers it screws it up by adding one to everything
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  mutate(Exclude1 = Condition/AttCheckSit) #This creates a column that is one if we should keep it and is something else otherwise
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  filter(Exclude1 == 1)
+
+```
+
+```{r}
+#Now we want to exclude anyone who failed the attention check built into the self-dehumanization scale, which is comparably a lot easier
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  filter(SelfDHCheck == 3)
+```
+
+```{r}
+#Now we can actually start the data analysis portion. First we want to simplify our table a bit to get rid of columns that are now unnecessary
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  select(SelfDH1:SelfDH10, Condition)
+#Then convert to characters
+PilotA_Data_fil <- PilotA_Data_fil %>%
+    mutate_if(is.factor, as.character)
+#And finally convert to numeric- I tried doing this and the previous in one function, but it wouldn't work for some reason
+PilotA_Data_fil <- PilotA_Data_fil %>%
+    mutate_if(is.character, as.numeric)
+#Let's make Condition back to a factor, which will be helpful later
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  mutate(Condition = as.factor(Condition))
+#Then we can actually calculate the mean scores for each person
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  mutate(SelfDH_Mean = 
+           rowMeans(select
+                    (., SelfDH1:SelfDH10)))
+
+ggplot(PilotA_Data_fil, aes(x=Condition, y=SelfDH_Mean, fill=Condition)) +
+  geom_bar(position="dodge", stat="identity") + 
+  scale_fill_brewer(palette="Set1")
+```
+
+```{r}
+#Now, in theory, we can run the actual analysis
+aov_results <- aov(SelfDH_Mean ~ Condition, data = PilotA_Data_fil)
+
+summary(aov_results)
+#One thing I wasn't sure about- is this the right kind of test to run? It's what they report running in the original paper (as best as I can tell), but it seems a little strange to run it given that the scores for individual participants are actually mean scores themselves.
+```
+

@@ -2,7 +2,7 @@
 title: Replication of The Link Between Self-Dehumanization and Immoral Behavior by
   Kouchaki, Dobson, Waytz, & Kteily (2018, Psychological Science)
 author: "Nicky Sullivan (nsull13@stanford.edu)"
-date: "10/04/2019"
+date: "10/27/2019"
 output: html_document
 
 ---
@@ -33,8 +33,11 @@ The main challenge will be getting a sample size that is large enough given limi
 
 ### Links
 
-Project repository: https://github.com/psych251/kouchaki2018.git   
-Original paper: https://github.com/psych251/kouchaki2018/blob/master/original_paper.pdf
+Project repository: https://github.com/psych251/kouchaki2018.git  
+
+Original paper: https://github.com/psych251/kouchaki2018/blob/master/original_paper.pdf 
+
+Qualtrics survey: https://stanforduniversity.qualtrics.com/jfe/form/SV_3HOv1q71DqayTXv
 
 ## Methods
 
@@ -42,27 +45,48 @@ Original paper: https://github.com/psych251/kouchaki2018/blob/master/original_pa
 
 Original effect size, power analysis for samples to achieve 80%, 90%, 95% power to detect that effect size.  Considerations of feasibility for selecting planned sample size.
 
+This will be completed after discussing power analysis in class next week.
+
 ### Planned Sample
 
 Planned sample size and/or termination rule, sampling frame, known demographics if any, preselection rules if any.
 
 ### Materials
 
-All materials - can quote directly from original article - just put the text in quotations and note that this was followed precisely.  Or, quote directly and just point out exceptions to what was described in the original article.
+Quoted directly from original article:
+
+"Participants were asked to recall an event and write about it for a few minutes, providing as many details as possible so that a person reading their entry would understand the situation and how they felt. We used the same instructions used in previous research (Barkan, Ayal, Gino, & Ariely, 2012). In the unethical condition, participants were asked to describe a situation where they did something unethical. In the ethical condition, they were instructed to write about something ethical from their past. In the neutral condition, they wrote about how they spend their evenings and described a typical instance.
+
+"We then measured self-dehumanization with 10 items (e.g., "How capable are you of experiencing emotion?" α = .91) from the Mind Attribution Scale, adapted from Kozak, Marsh, and Wegner (2006; 1 = not at all capable, 7 = extremely capable). This measure of reduced mind attribution has been validated as a measure of dehumanization in previous work (K. Gray, Knobe, Sheskin, Bloom, & Barrett, 2011; Khamitov, Rotman, & Piazza, 2016; Waytz & Epley, 2012).
+
+"As an attention check, we asked participants to indicate the topic of their writing task. In addition, we embedded an item on the self-dehumanization scale instructing them to select "3" for that item. They also completed a brief demographic questionnaire."
+
+The exact materials described above will be used in this replication.
 
 ### Procedure	
 
-Can quote directly from original article - just put the text in quotations and note that this was followed precisely.  Or, quote directly and just point out exceptions to what was described in the original article.
+Procedures will follow the description laid out in the Materials section above.
+
+First, quoted directly from the original article, "Participants were informed that they would complete several unrelated surveys." They will then complete the writing prompt described above, with an equal number of participants being placed into each of the three conditions (ethical, unethical, neutral). Participants will then complete an attention check (described above) asking them to select the topic of their writing task. All participants will then complete the self-dehumanization scale described above, which will include an attention check item as described above. Finally, all participants will complete a brief demographic questionnaire (described above).
 
 ### Analysis Plan
 
-Can also quote directly, though it is less often spelled out effectively for an analysis strategy section.  The key is to report an analysis strategy that is as close to the original - data cleaning rules, data exclusion rules, covariates, etc. - as possible.  
+First, participants will be excluded if they "failed to follow instructions to write an essay or failed the attention check". This leaves three possible reasons that participants could be excluded:
+1) Not completing the writing portion of the survey
+2) Incorrectly answering the question that asks what the topic of their writing prompt was
+3) Failing to select '3' on the attention check question embedded in the self-dehumanization measurement
 
-**Clarify key analysis of interest here**  You can also pre-specify additional analyses you plan to do.
+Then, individual participants' responses on the self-dehumanization scale will be averaged into a self-dehumanization score. None of the items are reverse-coded, so this will involve simply taking the mean response across the 10 questions comprising the scale (the item instructing participants to select "3" as an attention check will be excluded from this calculation).
+
+The **key analysis of interest** will involve conducting a one-way analysis of variance test comparing self-dehumanization mean scores (described above) across the three conditions (ethical writing prompt, unethical writing prompt, neutral writing prompt). This is the exact test that the authors conducted in the original paper.
+
+There are no additional analyses planned at this time.
 
 ### Differences from Original Study
 
-Explicitly describe known differences in sample, setting, procedure, and analysis plan from original study.  The goal, of course, is to minimize those differences, but differences will inevitably occur.  Also, note whether such differences are anticipated to make a difference based on claims in the original article or subsequent published research on the conditions for obtaining the effect.
+The materials used will be identical to the original study, and the replication will be conducted on Amazon Mechanical Turk, the same location as the original study. 
+
+The one difference is time of data collection: data for the original study were collected in 2016 amd before, whereas data collection for the replication will be collected in 2019. It is possible that the MTurk population has changed since this time, although there is no reason to expect that any such changes will impact the results of the study.
 
 ### Methods Addendum (Post Data Collection)
 
@@ -80,25 +104,148 @@ You can comment this section out prior to final report with data collection.
 
 ### Data preparation
 
-Data preparation following the analysis plan.
-	
-```{r include=F}
+```{r}
 ###Data Preparation
+#Step one is to load libraries
+library(tidyverse)
+library(ggthemes)
 
-####Load Relevant Libraries and Functions
+#Next step is to import the data and make sure it looks ok
+setwd("/Users/nickysullivan/Desktop/Psych_251/kouchaki2018")
+PilotA_Data <- read.csv("PilotA_Data4.csv")
+head(PilotA_Data)
 
-####Import data
+#Next let's filter out all the columns that we won't be using
+PilotA_Data_fil <- PilotA_Data %>%
+  select(Finished, PromptEthical:DemoLang)
 
-#### Data exclusion / filtering
+#Next we want to try and make a new column for condition that tells us what prompt the participant got
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  mutate(Condition = case_when(
+    grepl("a|e|i|o|u|y", PromptEthical) ~ 1,
+    grepl("a|e|i|o|u|y", PromptUnethical) ~ 2, 
+    grepl("a|e|i|o|u|y", PromptTypical) ~ 3
+  ))
 
-#### Prepare data for analysis - create columns etc.
+#Now we want to start excluding people. The first step we can actually exclude two of the three groups- those who didn't write anything and those who failed to answer the check where they reported what condition they were in. All we need to do is compare the Condition column to the check column, and if they're not the same exclude them
+
+#This gets rid of rows we don't need
+PilotA_Data_fil <- PilotA_Data_fil %>% 
+  filter(Finished == 1)
+
+#This converts the Condition column to numbers
+PilotA_Data_fil$Condition <- as.numeric(PilotA_Data_fil$Condition) 
+
+#This converts the Att Check column to numbers
+PilotA_Data_fil$AttCheckSit <-as.numeric(PilotA_Data_fil$AttCheckSit) 
+
+#This corrects for the fact that when you convert the Att Check column to numbers it screws it up by adding one to everything
+PilotA_Data_fil <- PilotA_Data_fil %>% 
+  mutate(AttCheckSit = AttCheckSit-1) 
+
+#This creates a column that is one if we should keep it and is something else otherwise
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  mutate(Exclude1 = Condition/AttCheckSit) 
+
+#And then this actually does the excluding
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  filter(Exclude1 == 1)
+
+#Now we want to exclude anyone who failed the attention check built into the self-dehumanization scale, which is comparably a lot easier
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  filter(SelfDHCheck == 3)
+
+#Now we can actually start the data analysis portion. First we want to simplify our table a bit to get rid of columns that are now unnecessary
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  select(SelfDH1:SelfDH10, Condition)
+
+#Then convert to characters
+PilotA_Data_fil <- PilotA_Data_fil %>%
+    mutate_if(is.factor, as.character)
+
+#And finally convert to numeric- I tried doing this and the previous in one function, but it wouldn't work for some reason
+PilotA_Data_fil <- PilotA_Data_fil %>%
+    mutate_if(is.character, as.numeric)
+
+#Let's make Condition back to a factor, which will be helpful later
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  mutate(Condition = as.factor(Condition))
+
+#Then we can actually calculate the mean scores for each person, which sets us up to perform the confirmatory analysis
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  mutate(SelfDH_Mean = 
+           rowMeans(select
+                    (., SelfDH1:SelfDH10)))
 ```
 
 ### Confirmatory analysis
 
 The analyses as specified in the analysis plan.  
 
-*Side-by-side graph with original graph is ideal here*
+```{r}
+#Now we can run the actual analysis
+aov_results <- aov(SelfDH_Mean ~ Condition, data = PilotA_Data_fil)
+
+summary(aov_results)
+#One thing I wasn't sure about- is this the right kind of test to run? It's what they report running in the original paper (as best as I can tell), but it seems a little strange to run it given that the scores for individual participants are actually mean scores themselves.
+
+#Let's add a column that will end up putting nicer labels on the graph
+PilotA_Data_fil <- PilotA_Data_fil %>%
+  mutate(Condition_Label = case_when(
+    Condition == 1 ~ "Ethical",
+    Condition == 2 ~ "Unethical", 
+    Condition == 3 ~ "Neutral")
+         )
+
+#This will allow me to set the order of the bars in the graph to match the original
+positions <- c("Unethical", "Ethical", "Neutral")
+
+#And this will set us up to graph the data
+PilotA_Data_sum <- PilotA_Data_fil %>%
+  group_by(Condition_Label) %>%
+  summarise(Overall_SDH_Mean = mean(SelfDH_Mean),
+            Overall_SE = sd(SelfDH_Mean)/sqrt(length(Condition_Label)))
+
+#Let's also do some quick graphing of the results
+ggplot(PilotA_Data_sum, aes(x=Condition_Label, y=Overall_SDH_Mean, fill=Condition_Label)) +
+  geom_bar(position="dodge", stat="identity") + 
+  scale_fill_brewer(palette="Set1") +
+  labs(y="Mind Attributed to Self") +
+  scale_x_discrete(limits = positions) +
+  coord_cartesian(ylim=c(4,7))
+
+#I also want to quickly plot the results from the original paper so we can compare side-by-side
+Original_Label <- c("Unethical", "Ethical", "Neutral")
+Original_Means <- c(5.82, 6.23, 6.16)
+Original_SDs <- c(1.11, .65, .73)
+Original_ns <- c(49, 54, 53)
+Original_Data <- data.frame(Original_Label, Original_Means, Original_SDs, Original_ns)
+
+#And then get the summary to set up the graph
+Original_Data_sum = Original_Data %>%
+  group_by(Original_Label) %>%
+  summarise(Orig_Over_SDH_Mean = mean(Original_Means),
+            Orig_Over_SE = Original_SDs/sqrt(Original_ns))
+```
+
+```{r dodge-st, fig.show = "hold", out.width = "50%"}
+#This let's us plot the original data next to the replication to see how they compare
+ggplot(Original_Data_sum, aes(x=Original_Label, y=Orig_Over_SDH_Mean, fill=Original_Label)) +
+  geom_bar(position="dodge", stat="identity") +
+  scale_fill_brewer(palette="Set1") +
+  labs(title="Original Data", y="Mind Attributed to Self") +
+  scale_x_discrete(limits = positions) +
+  coord_cartesian(ylim=c(4,7)) +
+  geom_errorbar(aes(ymin = Orig_Over_SDH_Mean - Orig_Over_SE, ymax = Orig_Over_SDH_Mean + Orig_Over_SE), position = "dodge")
+
+ggplot(PilotA_Data_sum, aes(x=Condition_Label, y=Overall_SDH_Mean, fill=Condition_Label)) +
+  geom_bar(position="dodge", stat="identity") + 
+  scale_fill_brewer(palette="Set1") +
+  labs(title="Replication Data", y="Mind Attributed to Self") +
+  scale_x_discrete(limits = positions) +
+  coord_cartesian(ylim=c(4,7)) +
+  geom_errorbar(aes(ymin = Overall_SDH_Mean - Overall_SE, ymax = Overall_SDH_Mean + Overall_SE), position = "dodge")
+```
 
 ### Exploratory analyses
 
