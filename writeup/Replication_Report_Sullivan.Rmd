@@ -2,7 +2,7 @@
 title: Replication of The Link Between Self-Dehumanization and Immoral Behavior by
   Kouchaki, Dobson, Waytz, & Kteily (2018, Psychological Science)
 author: "Nicky Sullivan (nsull13@stanford.edu)"
-date: "10/27/2019"
+date: "11/24/2019"
 output: html_document
 
 ---
@@ -43,13 +43,15 @@ Qualtrics survey: https://stanforduniversity.qualtrics.com/jfe/form/SV_3HOv1q71D
 
 ### Power Analysis
 
-Original effect size, power analysis for samples to achieve 80%, 90%, 95% power to detect that effect size.  Considerations of feasibility for selecting planned sample size.
+The effect size reported in the original paper was a partial eta squared of .04, which can be converted to an f of 0.1938. Using this to conduct a power analysis using G*Power yields the following recommended sample sizes: 80% power: 261; 90% power: 342; 95% power: 417.
 
-This will be completed after discussing power analysis in class next week.
+Given the financial limits of the class, 80% power is the most reasonable sample size. Unfortunately, even this is likely too large a sample (especially given that the actual sample size will need to be larger considering exclusions).
+
 
 ### Planned Sample
 
-Planned sample size and/or termination rule, sampling frame, known demographics if any, preselection rules if any.
+Based on the results of the power analysis, it was determined that we would attempt to match the sample size in the original paper. They originally aimed for 50 participants per condition, and oversampled because of anticipated exclusions. This left them with an initial sample size of 177, and a final sample size of 156. In order to also achieve 50 participants per condition, we will aim to get an initial sample size of 174, which after exclusions will likely leave us with approximately 50 participants per condition. 
+
 
 ### Materials
 

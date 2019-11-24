@@ -12,7 +12,7 @@
 
 <meta name="author" content="Nicky Sullivan (nsull13@stanford.edu)" />
 
-<meta name="date" content="2019-10-27" />
+<meta name="date" content="2019-11-24" />
 
 <title>Replication of The Link Between Self-Dehumanization and Immoral Behavior by Kouchaki, Dobson, Waytz, &amp; Kteily (2018, Psychological Science)</title>
 
@@ -365,7 +365,7 @@ summary {
 
 <h1 class="title toc-ignore">Replication of The Link Between Self-Dehumanization and Immoral Behavior by Kouchaki, Dobson, Waytz, &amp; Kteily (2018, Psychological Science)</h1>
 <h4 class="author">Nicky Sullivan (<a href="mailto:nsull13@stanford.edu" class="email">nsull13@stanford.edu</a>)</h4>
-<h4 class="date">10/27/2019</h4>
+<h4 class="date">11/24/2019</h4>
 
 </div>
 
@@ -403,12 +403,12 @@ summary {
 <h2>Methods</h2>
 <div id="power-analysis" class="section level3">
 <h3>Power Analysis</h3>
-<p>Original effect size, power analysis for samples to achieve 80%, 90%, 95% power to detect that effect size. Considerations of feasibility for selecting planned sample size.</p>
-<p>This will be completed after discussing power analysis in class next week.</p>
+<p>The effect size reported in the original paper was a partial eta squared of .04, which can be converted to an f of 0.1938. Using this to conduct a power analysis using G*Power yields the following recommended sample sizes: 80% power: 261; 90% power: 342; 95% power: 417.</p>
+<p>Given the financial limits of the class, 80% power is the most reasonable sample size. Unfortunately, even this is likely too large a sample (especially given that the actual sample size will need to be larger considering exclusions).</p>
 </div>
 <div id="planned-sample" class="section level3">
 <h3>Planned Sample</h3>
-<p>Planned sample size and/or termination rule, sampling frame, known demographics if any, preselection rules if any.</p>
+<p>Based on the results of the power analysis, it was determined that we would attempt to match the sample size in the original paper. They originally aimed for 50 participants per condition, and oversampled because of anticipated exclusions. This left them with an initial sample size of 177, and a final sample size of 156. In order to also achieve 50 participants per condition, we will aim to get an initial sample size of 174, which after exclusions will likely leave us with approximately 50 participants per condition.</p>
 </div>
 <div id="materials" class="section level3">
 <h3>Materials</h3>
@@ -455,12 +455,12 @@ summary {
 <pre class="r"><code>###Data Preparation
 #Step one is to load libraries
 library(tidyverse)</code></pre>
-<pre><code>## ── Attaching packages ──────────────────────────── tidyverse 1.2.1 ──</code></pre>
+<pre><code>## ── Attaching packages ───────────────────────────────── tidyverse 1.2.1 ──</code></pre>
 <pre><code>## ✔ ggplot2 3.2.1     ✔ purrr   0.3.2
 ## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
 ## ✔ tidyr   1.0.0     ✔ stringr 1.4.0
 ## ✔ readr   1.3.1     ✔ forcats 0.4.0</code></pre>
-<pre><code>## ── Conflicts ─────────────────────────────── tidyverse_conflicts() ──
+<pre><code>## ── Conflicts ──────────────────────────────────── tidyverse_conflicts() ──
 ## ✖ dplyr::filter() masks stats::filter()
 ## ✖ dplyr::lag()    masks stats::lag()</code></pre>
 <pre class="r"><code>library(ggthemes)
