@@ -2,7 +2,7 @@
 title: Replication of The Link Between Self-Dehumanization and Immoral Behavior by
   Kouchaki, Dobson, Waytz, & Kteily (2018, Psychological Science)
 author: "Nicky Sullivan (nsull13@stanford.edu)"
-date: "11/24/2019"
+date: "12/3/2019"
 output: html_document
 
 ---
@@ -109,11 +109,12 @@ You can comment this section out prior to final report with data collection.
 ```{r}
 ###Data Preparation
 #Step one is to load libraries
+library(here)
 library(tidyverse)
 library(ggthemes)
 
 #Next step is to import the data and make sure it looks ok
-setwd("/Users/nickysullivan/Desktop/Psych_251/kouchaki2018")
+setwd(here())
 PilotA_Data <- read.csv("PilotA_Data4.csv")
 head(PilotA_Data)
 
@@ -189,7 +190,6 @@ The analyses as specified in the analysis plan.
 aov_results <- aov(SelfDH_Mean ~ Condition, data = PilotA_Data_fil)
 
 summary(aov_results)
-#One thing I wasn't sure about- is this the right kind of test to run? It's what they report running in the original paper (as best as I can tell), but it seems a little strange to run it given that the scores for individual participants are actually mean scores themselves.
 
 #Let's add a column that will end up putting nicer labels on the graph
 PilotA_Data_fil <- PilotA_Data_fil %>%
@@ -207,14 +207,6 @@ PilotA_Data_sum <- PilotA_Data_fil %>%
   group_by(Condition_Label) %>%
   summarise(Overall_SDH_Mean = mean(SelfDH_Mean),
             Overall_SE = sd(SelfDH_Mean)/sqrt(length(Condition_Label)))
-
-#Let's also do some quick graphing of the results
-ggplot(PilotA_Data_sum, aes(x=Condition_Label, y=Overall_SDH_Mean, fill=Condition_Label)) +
-  geom_bar(position="dodge", stat="identity") + 
-  scale_fill_brewer(palette="Set1") +
-  labs(y="Mind Attributed to Self") +
-  scale_x_discrete(limits = positions) +
-  coord_cartesian(ylim=c(4,7))
 
 #I also want to quickly plot the results from the original paper so we can compare side-by-side
 Original_Label <- c("Unethical", "Ethical", "Neutral")
