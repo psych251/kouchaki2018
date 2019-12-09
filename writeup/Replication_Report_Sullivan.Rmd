@@ -115,15 +115,16 @@ library(ggthemes)
 
 #Next step is to import the data and make sure it looks ok
 setwd(here())
-PilotA_Data <- read.csv("PilotA_Data4.csv")
-head(PilotA_Data)
+Final_Data <- read.csv("Kouchaki_raw_data.csv")
+head(Final_Data)
+View(Final_Data)
 
 #Next let's filter out all the columns that we won't be using
-PilotA_Data_fil <- PilotA_Data %>%
+Final_fil <- Final_Data %>%
   select(Finished, PromptEthical:DemoLang)
 
 #Next we want to try and make a new column for condition that tells us what prompt the participant got
-PilotA_Data_fil <- PilotA_Data_fil %>%
+Final_Data_fil <- Final_Data_fil %>%
   mutate(Condition = case_when(
     grepl("a|e|i|o|u|y", PromptEthical) ~ 1,
     grepl("a|e|i|o|u|y", PromptUnethical) ~ 2, 
@@ -133,49 +134,57 @@ PilotA_Data_fil <- PilotA_Data_fil %>%
 #Now we want to start excluding people. The first step we can actually exclude two of the three groups- those who didn't write anything and those who failed to answer the check where they reported what condition they were in. All we need to do is compare the Condition column to the check column, and if they're not the same exclude them
 
 #This gets rid of rows we don't need
-PilotA_Data_fil <- PilotA_Data_fil %>% 
+Final_Data_fil <- Final_Data_fil %>% 
   filter(Finished == 1)
 
 #This converts the Condition column to numbers
-PilotA_Data_fil$Condition <- as.numeric(PilotA_Data_fil$Condition) 
+Final_Data_fil$Condition <- as.numeric(Final_Data_fil$Condition) 
 
 #This converts the Att Check column to numbers
-PilotA_Data_fil$AttCheckSit <-as.numeric(PilotA_Data_fil$AttCheckSit) 
+Final_Data_fil$AttCheckSit <-as.numeric(Final_Data_fil$AttCheckSit) 
 
-#This corrects for the fact that when you convert the Att Check column to numbers it screws it up by adding one to everything
-PilotA_Data_fil <- PilotA_Data_fil %>% 
-  mutate(AttCheckSit = AttCheckSit-1) 
+#This corrects for the fact that when you convert the Att Check column to numbers it screws it up by adding two to everything
+Final_Data_fil <- Final_Data_fil %>% 
+  mutate(AttCheckSit = AttCheckSit-2) 
+
+View(Final_Data_fil)
 
 #This creates a column that is one if we should keep it and is something else otherwise
-PilotA_Data_fil <- PilotA_Data_fil %>%
+Final_Data_fil <- Final_Data_fil %>%
   mutate(Exclude1 = Condition/AttCheckSit) 
 
 #And then this actually does the excluding
-PilotA_Data_fil <- PilotA_Data_fil %>%
+Final_Data_fil <- Final_Data_fil %>%
   filter(Exclude1 == 1)
 
 #Now we want to exclude anyone who failed the attention check built into the self-dehumanization scale, which is comparably a lot easier
-PilotA_Data_fil <- PilotA_Data_fil %>%
+Final_Data_fil <- Final_Data_fil %>%
   filter(SelfDHCheck == 3)
 
+#FIX THIS TO ONLY GET THE ACTUAL DATA
+Final_Data_fil <- Final_Data_fil %>%
+  slice(12:17)
+
+View(Final_Data_fil)
+
 #Now we can actually start the data analysis portion. First we want to simplify our table a bit to get rid of columns that are now unnecessary
-PilotA_Data_fil <- PilotA_Data_fil %>%
+Final_Data_fil <- Final_Data_fil %>%
   select(SelfDH1:SelfDH10, Condition)
 
 #Then convert to characters
-PilotA_Data_fil <- PilotA_Data_fil %>%
+Final_Data_fil <- Final_Data_fil %>%
     mutate_if(is.factor, as.character)
 
 #And finally convert to numeric- I tried doing this and the previous in one function, but it wouldn't work for some reason
-PilotA_Data_fil <- PilotA_Data_fil %>%
+Final_Data_fil <- Final_Data_fil %>%
     mutate_if(is.character, as.numeric)
 
 #Let's make Condition back to a factor, which will be helpful later
-PilotA_Data_fil <- PilotA_Data_fil %>%
+Final_Data_fil <- Final_Data_fil %>%
   mutate(Condition = as.factor(Condition))
 
 #Then we can actually calculate the mean scores for each person, which sets us up to perform the confirmatory analysis
-PilotA_Data_fil <- PilotA_Data_fil %>%
+Final_Data_fil <- Final_Data_fil %>%
   mutate(SelfDH_Mean = 
            rowMeans(select
                     (., SelfDH1:SelfDH10)))
@@ -187,12 +196,12 @@ The analyses as specified in the analysis plan.
 
 ```{r}
 #Now we can run the actual analysis
-aov_results <- aov(SelfDH_Mean ~ Condition, data = PilotA_Data_fil)
+aov_results <- aov(SelfDH_Mean ~ Condition, data = Final_Data_fil)
 
 summary(aov_results)
 
 #Let's add a column that will end up putting nicer labels on the graph
-PilotA_Data_fil <- PilotA_Data_fil %>%
+Final_Data_fil <- Final_Data_fil %>%
   mutate(Condition_Label = case_when(
     Condition == 1 ~ "Ethical",
     Condition == 2 ~ "Unethical", 
@@ -203,9 +212,10 @@ PilotA_Data_fil <- PilotA_Data_fil %>%
 positions <- c("Unethical", "Ethical", "Neutral")
 
 #And this will set us up to graph the data
-PilotA_Data_sum <- PilotA_Data_fil %>%
+Final_Data_sum <- Final_Data_fil %>%
   group_by(Condition_Label) %>%
   summarise(Overall_SDH_Mean = mean(SelfDH_Mean),
+            Overall_SD = sd(SelfDH_Mean),
             Overall_SE = sd(SelfDH_Mean)/sqrt(length(Condition_Label)))
 
 #I also want to quickly plot the results from the original paper so we can compare side-by-side
@@ -232,7 +242,7 @@ ggplot(Original_Data_sum, aes(x=Original_Label, y=Orig_Over_SDH_Mean, fill=Origi
   coord_cartesian(ylim=c(4,7)) +
   geom_errorbar(aes(ymin = Orig_Over_SDH_Mean - Orig_Over_SE, ymax = Orig_Over_SDH_Mean + Orig_Over_SE), position = "dodge")
 
-ggplot(PilotA_Data_sum, aes(x=Condition_Label, y=Overall_SDH_Mean, fill=Condition_Label)) +
+ggplot(Final_Data_sum, aes(x=Condition_Label, y=Overall_SDH_Mean, fill=Condition_Label)) +
   geom_bar(position="dodge", stat="identity") + 
   scale_fill_brewer(palette="Set1") +
   labs(title="Replication Data", y="Mind Attributed to Self") +
