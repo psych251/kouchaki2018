@@ -2,7 +2,7 @@
 title: Replication of The Link Between Self-Dehumanization and Immoral Behavior by
   Kouchaki, Dobson, Waytz, & Kteily (2018, Psychological Science)
 author: "Nicky Sullivan (nsull13@stanford.edu)"
-date: "12/3/2019"
+date: "12/10/2019"
 output: html_document
 
 ---
@@ -38,6 +38,8 @@ Project repository: https://github.com/psych251/kouchaki2018.git
 Original paper: https://github.com/psych251/kouchaki2018/blob/master/original_paper.pdf 
 
 Qualtrics survey: https://stanforduniversity.qualtrics.com/jfe/form/SV_3HOv1q71DqayTXv
+
+Preregistration: https://osf.io/ebwpv/
 
 ## Methods
 
@@ -88,18 +90,17 @@ There are no additional analyses planned at this time.
 
 The materials used will be identical to the original study, and the replication will be conducted on Amazon Mechanical Turk, the same location as the original study. 
 
-The one difference is time of data collection: data for the original study were collected in 2016 amd before, whereas data collection for the replication will be collected in 2019. It is possible that the MTurk population has changed since this time, although there is no reason to expect that any such changes will impact the results of the study.
+The one difference is time of data collection: data for the original study were collected in 2016 and before, whereas data collection for the replication will be collected in 2019. It is possible that the MTurk population has changed since this time, although there is no reason to expect that any such changes will impact the results of the study.
 
 ### Methods Addendum (Post Data Collection)
 
-You can comment this section out prior to final report with data collection.
-
 #### Actual Sample
-  Sample size, demographics, data exclusions based on rules spelled out in analysis plan
+
+We finished with a final sample size of 175 participants (mean age: 34.7, 65% female). Of the total, 56 participants were excluded for failing one of the two attention checks, leaving a final sample size of 119 participants (31 in the unethical condition, 43 in the neutral condition, and 45 in the ethical condition).
 
 #### Differences from pre-data collection methods plan
-  Any differences from what was described as the original plan, or “none”.
 
+None.
 
 ## Results
 
@@ -112,16 +113,39 @@ You can comment this section out prior to final report with data collection.
 library(here)
 library(tidyverse)
 library(ggthemes)
+library(DescTools)
+library(heplots)
 
 #Next step is to import the data and make sure it looks ok
 setwd(here())
 Final_Data <- read.csv("Kouchaki_raw_data.csv")
-head(Final_Data)
-View(Final_Data)
 
 #Next let's filter out all the columns that we won't be using
-Final_fil <- Final_Data %>%
-  select(Finished, PromptEthical:DemoLang)
+Final_Data_fil <- Final_Data %>%
+  select(StartDate, Finished, PromptEthical:DemoLang)
+
+#And then let's filter out all the people that weren't in the final round of data collection
+Final_Data_fil <- Final_Data_fil %>%
+  slice(48:222)
+
+#Let's do a quick demographic check
+Final_Data_fil$DemoAge <- as.character(Final_Data_fil$DemoAge)
+
+Final_Data_fil$DemoGen <- as.character(Final_Data_fil$DemoGen)
+
+Final_Data_fil$DemoLang <- as.character(Final_Data_fil$DemoLang)
+
+Final_Data_fil$DemoAge <- as.numeric(Final_Data_fil$DemoAge)
+
+Final_Data_fil$DemoGen <- as.numeric(Final_Data_fil$DemoGen)
+
+Final_Data_fil$DemoLang <- as.numeric(Final_Data_fil$DemoLang)
+
+
+Final_Data_demo <- Final_Data_fil %>%
+  summarise(age_mean = mean(DemoAge),
+            gender_prop = mean(DemoGen)
+            )
 
 #Next we want to try and make a new column for condition that tells us what prompt the participant got
 Final_Data_fil <- Final_Data_fil %>%
@@ -147,8 +171,6 @@ Final_Data_fil$AttCheckSit <-as.numeric(Final_Data_fil$AttCheckSit)
 Final_Data_fil <- Final_Data_fil %>% 
   mutate(AttCheckSit = AttCheckSit-2) 
 
-View(Final_Data_fil)
-
 #This creates a column that is one if we should keep it and is something else otherwise
 Final_Data_fil <- Final_Data_fil %>%
   mutate(Exclude1 = Condition/AttCheckSit) 
@@ -161,15 +183,9 @@ Final_Data_fil <- Final_Data_fil %>%
 Final_Data_fil <- Final_Data_fil %>%
   filter(SelfDHCheck == 3)
 
-#FIX THIS TO ONLY GET THE ACTUAL DATA
-Final_Data_fil <- Final_Data_fil %>%
-  slice(12:17)
-
-View(Final_Data_fil)
-
 #Now we can actually start the data analysis portion. First we want to simplify our table a bit to get rid of columns that are now unnecessary
 Final_Data_fil <- Final_Data_fil %>%
-  select(SelfDH1:SelfDH10, Condition)
+  select(PromptRelevant, SelfDH1:SelfDH10, Condition)
 
 #Then convert to characters
 Final_Data_fil <- Final_Data_fil %>%
@@ -192,13 +208,14 @@ Final_Data_fil <- Final_Data_fil %>%
 
 ### Confirmatory analysis
 
-The analyses as specified in the analysis plan.  
-
 ```{r}
 #Now we can run the actual analysis
 aov_results <- aov(SelfDH_Mean ~ Condition, data = Final_Data_fil)
 
 summary(aov_results)
+
+#And get the partial eta squared, which was the original authors' measure of effect size
+etasq(aov_results, partial = TRUE)
 
 #Let's add a column that will end up putting nicer labels on the graph
 Final_Data_fil <- Final_Data_fil %>%
@@ -208,13 +225,17 @@ Final_Data_fil <- Final_Data_fil %>%
     Condition == 3 ~ "Neutral")
          )
 
+#Let's also output the data now so that it's accessible in anonymized fashion
+write.csv(Final_Data_fil, file = "Kouchaki_replication_data.csv")
+
 #This will allow me to set the order of the bars in the graph to match the original
 positions <- c("Unethical", "Ethical", "Neutral")
 
 #And this will set us up to graph the data
 Final_Data_sum <- Final_Data_fil %>%
   group_by(Condition_Label) %>%
-  summarise(Overall_SDH_Mean = mean(SelfDH_Mean),
+  summarise(Sample_size = length(Condition_Label),
+            Overall_SDH_Mean = mean(SelfDH_Mean),
             Overall_SD = sd(SelfDH_Mean),
             Overall_SE = sd(SelfDH_Mean)/sqrt(length(Condition_Label)))
 
@@ -253,14 +274,100 @@ ggplot(Final_Data_sum, aes(x=Condition_Label, y=Overall_SDH_Mean, fill=Condition
 
 ### Exploratory analyses
 
-Any follow-up analyses desired (not required).  
+We'll run a couple of exploratory analyses. First, we'll start by looking at individual t-tests comparing the conditions to each other. The authors included this in the original paper, but it was not their primary analysis, so we'll report it here.
+
+```{r}
+
+#First let's split the data out by condition, which will make it easier to run t-tests
+ethical_data <- Final_Data_fil %>%
+  filter(Condition_Label == "Ethical")
+
+unethical_data <- Final_Data_fil %>%
+  filter(Condition_Label == "Unethical")
+
+neutral_data <- Final_Data_fil %>%
+  filter(Condition_Label == "Neutral")
+
+#Then we can run the actual tests
+t.test(ethical_data$SelfDH_Mean, neutral_data$SelfDH_Mean, alternative = "two.sided")
+t.test(ethical_data$SelfDH_Mean, unethical_data$SelfDH_Mean, alternative = "two.sided")
+t.test(unethical_data$SelfDH_Mean, neutral_data$SelfDH_Mean, alternative = "two.sided")
+
+```
+
+Next we'll do a quick look at the actual responses, to see if there's anything interesting there. I noticed when scrolling through the responses that there seemed to be a lot of irrelevant responses, so I want to see if excluding those changes the results, as this should exclude people who didn't complete the  manipulation but were able to pass the attention checks.
+
+To do so, I went through the initial data and added a column that had a 1 in it if the textual response could plausibly be seen as an answer to the question and a 0 if it was completely unrelated or unintelligble. I tried to use pretty liberal criteria, and while it would be ideal to have a more careful analysis this should at least give us a sense of whether it makes a difference. Using that data, we can then see if excluding people who didn't write something relevant changes the outcome. 
+
+```{r}
+#We'll start by just looking at the proportion of people who had relevant responses after all other exclusions
+mean(Final_Data_fil$PromptRelevant)
+
+```
+
+That's interesting- even after excluding people who failed one of the attention checks, about 15% of people had responses that were completely irrelevant. Now we can move on to do a little more data wrangling before actually running the tests to see if excluding this group of people would change our results.
+
+
+```{r}
+#We'll first filter out people who gave irrelevant responses, then summarise the data
+Final_Data_response <- Final_Data_fil %>%
+  filter(PromptRelevant == 1)
+
+Final_Data_response_sum <- Final_Data_response %>%
+  group_by(Condition) %>%
+  summarise(Sample_size = length(Condition),
+            Overall_SDH_Mean = mean(SelfDH_Mean),
+            Overall_SD = sd(SelfDH_Mean),
+            Overall_SE = sd(SelfDH_Mean)/sqrt(length(Condition)))
+
+#Here's our actual test- what happens when we run the ANOVA
+aov_results_response <- aov(SelfDH_Mean ~ Condition, data = Final_Data_response)
+
+summary(aov_results_response)
+
+#And let's also run the individual t-tests to see if anything changes there
+ethical_data_response <- Final_Data_response %>%
+  filter(Condition == "1")
+
+unethical_data_response <- Final_Data_response %>%
+  filter(Condition == "2")
+
+neutral_data_response <- Final_Data_response %>%
+  filter(Condition == "3")
+
+t.test(ethical_data_response$SelfDH_Mean, neutral_data_response$SelfDH_Mean, alternative = "two.sided")
+t.test(ethical_data_response$SelfDH_Mean, unethical_data_response$SelfDH_Mean, alternative = "two.sided")
+t.test(unethical_data_response$SelfDH_Mean, neutral_data_response$SelfDH_Mean, alternative = "two.sided")
+```
+
+I also want to run one final quick analysis to check the Cronbach's Alpha of the scale, to see how internally consistent it is. 
+
+```{r}
+#We start by splitting out just the item responses
+Final_Data_alpha <- Final_Data_fil %>%
+  select(SelfDH1:SelfDH10)
+
+#And then calculate the alpha
+CronbachAlpha(Final_Data_alpha)
+
+```
 
 ## Discussion
 
 ### Summary of Replication Attempt
 
-Open the discussion section with a paragraph summarizing the primary result from the confirmatory analysis and the assessment of whether it replicated, partially replicated, or failed to replicate the original result.  
+The confirmatory analysis consisted of an ANOVA comparing the three conditions, F(2, 116) = 8.16, p < .0005. This replicates the original study, and in fact showed a lower p-value (p < .0005 in the replication versus p = 0.033 in the original) and a larger effect size (partial eta squared of 0.12 in the replication versus 0.04 in the original).
 
 ### Commentary
 
-Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis, (b) assessment of the meaning of the replication (or not) - e.g., for a failure to replicate, are the differences between original and present study ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the replication attempt.  None of these need to be long.
+Secondary and exploratory analyses provide some interesting context to the replication. In addition to running an ANOVA, the authors also ran t-tests comparing the individual conditions. In the original study, the authors found a significant difference between the unethical and the ethical condition, and a marginal difference between the unethical and the neutral condition, but no difference between the ethical and neutral conditions. In the replication, we also showed a significant difference between the unethical and ethical conditions. But we also showed a signifcant difference between the unethical and neutral condition (where the original study had seen a marginal difference) and a marginal difference between the ethical and neutral conditions, where the authors had seen no difference. The differences were in an expected direction, with participants in the neutral condition showing marginally more self-dehumanization than those in the ethical condition and significantly less self-dehumanization than those in the unethical condition, but it's still interesting to see a result where the authors had observed none. 
+
+Exploratory analyses added some more context to the above finding. An analysis conducted with responses that had been coded as 'irrelevant' removed from the data set (which was not an exclusion criterion in the original study) showed a similar pattern of results. But when these participants were removed, all three of the t-tests described above becamse significant, indicating that among participants who engaged in the manipulation there were significant differences between all three conditions.
+
+Exploratory analyses on the reliability of the scale returned a Cronbach's alpha of 0.91, indicating a highly reliable scale and suggesting that it was not one or two of the items that were driving participants' response, but the scale as a whole. 
+
+There is one other interesting note that should be mentioned. In the original study, the authors excluded 21 out of 177 participants, yielding an exclusion rate of 11.8% and a final sample size of 156. In our replication, we excluded 56 out of 175 participants, yielding an exclusion rate of 32% and a final sample size of 119. Additionally, while the authors didn't indicate a large difference in exclusions between groups (they didn't report exclusions by group but finished with between 49 and 54 participants in each condition), the replication had many more exclusions in the unethical condition (a final sample size of 31 in the unethical condition as compared to 43 in the neutral condition and 45 in the ethical condition). This difference is not particularly surprising, as people may have been uncomfortable writing about an unethical act and thus may have left the space blank at a higher rate, but it is an interesting difference from the original. It also brings into question whether these exclusions meant there was in effect a different subset of participants in the unethical condition than in the other two conditions, and whether this might explain some of our observed results.
+
+On the whole, the replication does provide support for the idea that recalling and writing about an unethical act leads people to dehumanize themselves more. 
+
+The original authors did not raise any objections or challenges regarding the replication attempt.
